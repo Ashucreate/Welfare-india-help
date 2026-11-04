@@ -1,0 +1,23 @@
+{
+  "name": "welfare-india-help",
+  "version": "1.0.0",
+  "description": "Welfare India Help - Information portal for government schemes, recruitment, results and scholarships",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ashucreate/Welfare-india-help.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ashucreate/Welfare-india-help/issues"
+  },
+  "homepage": "https://github.com/Ashucreate/Welfare-india-help#readme",
+  "dependencies": {
+    "@vercel/analytics": "^2.0.1"
+  }
+}
