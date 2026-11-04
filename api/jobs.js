@@ -12,10 +12,6 @@ const FEEDS = [
   ["schemes", "महाराष्ट्र शासन योजना 2026"],
   ["scholarship", "scholarship OR शिष्यवृत्ती 2026 MahaDBT"],
 ];
-const gnews = (q) =>
-  "https://news.google.com/rss/search?q=" +
-  encodeURIComponent(q + " " + DAYS) +
-  "&hl=mr&gl=IN&ceid=IN:mr";
 
 async function get(url) {
   const c = new AbortController();
