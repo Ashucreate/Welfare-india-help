@@ -278,6 +278,15 @@ window.onload = function() {
       console.error("Error loading jobs:", error);
     }
   }
+<script>
+  window.onload = function() {
+      if (typeof fetchAutorSSData === 'function') {
+          fetchAutorSSData();
+      }
+      if (typeof D !== 'undefined' && typeof render === 'function') {
+          render(D);
+      }
+  };
 </script>
 </body>
 </html>
