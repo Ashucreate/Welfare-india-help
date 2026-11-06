@@ -240,7 +240,7 @@ $('lang').addEventListener('change',function(){var t=L[this.value];$('tagline').
 window.onload = function() {
   fetchAutoRSSData();
 };
- <script>
+<script>
   // Page load hone par purana aur naya dono functions chal jayenge
   window.onload = function() {
       if (typeof fetchAutorSSData === 'function') {
@@ -249,7 +249,7 @@ window.onload = function() {
       loadJobs(); // Yeh live jobs fetch karega
   };
 
-  // Vercel API se live jobs fetch karke website par dikhane ka code
+  // Vercel API से live jobs fetch करके website पर दिखाने का कोड
   async function loadJobs() {
     try {
       const response = await fetch('/api/jobs');
