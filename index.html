@@ -241,52 +241,57 @@ window.onload = function() {
   fetchAutoRSSData();
 };
 <script>
-  window.onload = function() {
-      if (typeof fetchAutorSSData === 'function') {
-          fetchAutorSSData();
-      }
-      loadJobs();
-  };
+var NAV=[['all','🏠 मुखपृष्ठ'],['current','💼 वर्तमान भरती 2026'],['mega','⭐ महाभरती'],['central','🚩 Central Govt Jobs'],['admit','🎟️ प्रवेशपत्र'],['result','📊 निकाल'],['schemes','💗 शासकीय योजना'],['scholarship','🎓 शिष्यवृत्ती']];
+var POP=[['POWERGRID','POWERGRID Bharti'],['RRB ALP','RRB Railway'],['पोलीस भरती','Police Bharti'],['लाडकी बहीण','Ladki Bahin'],['10th Result','Board Result']];
+var N='bg-brand-navy text-white',cur='all';
 
-  async function loadJobs() {
-    try {
-      const response = await fetch('/api/jobs');
-      const data = await response.json();
-      
-      console.log("Jobs fetched successfully:", data.items);
-      
-      const tbody = document.getElementById('rows');
-      if (tbody && data.items) {
-        tbody.innerHTML = data.items.map(job => `
-          <tr class="hover:bg-slate-800/60 cursor-pointer">
-            <td class="py-3 px-3 text-xs font-semibold text-slate-400 font-mono">${new Date(job.date).toLocaleDateString()}</td>
-            <td class="py-3 px-3 font-semibold text-slate-100 leading-snug">
-              <div class="flex flex-wrap items-center gap-2 mb-1">
-                <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase bg-red-500 text-white">${job.c}</span>
-                <span class="text-xs text-brand-gold font-bold">Government Job</span>
-              </div>
-              <a href="${job.u}" target="_blank" class="hover:underline text-white">${job.t}</a>
-              ${job.v ? `<div class="text-[11px] font-normal text-slate-400 mt-1.5">👥 ${job.v}</div>` : ''}
-            </td>
-            <td class="py-3 px-3 text-center">
-              <a href="${job.u}" target="_blank" class="bg-brand-navy hover:bg-blue-700 text-white font-bold text-xs px-3 py-1.5 rounded-lg border border-slate-700 inline-block">माहिती पहा</a>
-            </td>
-          </tr>
-        `).join('');
-      }
-    } catch (error) {
-      console.error("Error loading jobs:", error);
-    }
-  }
-<script>
-  window.onload = function() {
-      if (typeof fetchAutorSSData === 'function') {
-          fetchAutorSSData();
-      }
-      if (typeof D !== 'undefined' && typeof render === 'function') {
-          render(D);
-      }
-  };
+var fallbackD=[
+{id:1,d:'03/11/2026',c:'current',b:'NEW',bc:'bg-red-500 text-white',t:'POWERGRID Engineer Trainee Bharti 2026: 319 जागांसाठी भरती',dp:'Power Grid Corporation of India Limited',v:'319 पदे',q:'B.E/B.Tech + GATE Score',l:'संपूर्ण भारत',ld:'20 नोव्हेंबर 2026',m:'ऑनलाईन',a:'18 ते 28 वर्षे (SC/ST: 5, OBC: 3 वर्षे सवलत)',f:'General/OBC: ₹500 | SC/ST/PwD: फी नाही',dt:[['अर्ज सुरू','25 ऑक्टोबर 2026'],['शेवटची तारीख','20 नोव्हेंबर 2026','15 नोव्हेंबर 2026']],p:[['1','Engineer Trainee (Electrical)','180','B.E/B.Tech Electrical, किमान 60% + GATE'],['2','Engineer Trainee (Civil)','85','B.E/B.Tech Civil + GATE'],['3','Engineer Trainee (Computer Science)','54','B.E/B.Tech CSE/IT + GATE']],g:'',u:'https://www.powergrid.in'},
+{id:2,d:'03/11/2026',c:'central',b:'NEW',bc:'bg-red-500 text-white',t:'AFCAT 2027: भारतीय हवाई दल AFCAT-01/2027 अधिकारी भरती',dp:'Indian Air Force (IAF)',v:'300+ पदे',q:'पदवी / B.E / B.Tech',l:'संपूर्ण भारत',ld:'30 नोव्हेंबर 2026',m:'ऑनलाईन',a:'Flying: 20-24 वर्षे | Ground Duty: 20-26 वर्षे',f:'₹550 + GST',dt:[['अर्ज सुरू','01 नोव्हेंबर 2026'],['अंतिम दिनांक','30 नोव्हेंबर 2026']],p:[['1','Flying Branch','50','कोणतीही पदवी (12वी Physics-Math) किंवा B.E/B.Tech'],['2','Ground Duty (Technical)','160','B.E/B.Tech'],['3','Ground Duty (Non-Technical)','90','पदवी, किमान 60%']],g:'',u:'https://afcat.cdac.in'},
+{id:3,d:'01/11/2026',c:'admit',b:'HALL TICKET',bc:'bg-amber-500 text-slate-950',t:'RRB ALP Hall Ticket: रेल्वे ALP (CBT 1) परीक्षा प्रवेशपत्र',dp:'Railway Recruitment Boards (RRB)',v:'18799 पदे',q:'10वी + ITI / Diploma',l:'All India',ld:'परीक्षा: नोव्हेंबर 2026',m:'CBT परीक्षा',a:'18 ते 33 वर्षे',f:'लागू नाही (प्रवेशपत्र डाऊनलोड)',dt:[['परीक्षा तारीख','25 ते 30 नोव्हेंबर 2026'],['प्रवेशपत्र','परीक्षेच्या 4 दिवस आधीपासून']],p:[['1','Assistant Loco Pilot (ALP)','18799','10वी + ITI (संबंधित ट्रेड) किंवा Diploma']],g:'',u:'https://indianrailways.gov.in'},
+{id:4,d:'30/10/2026',c:'mega',b:'MEGA BHARTI',bc:'bg-purple-600 text-white',t:'महाराष्ट्र पोलीस भरती 2026: 17,000+ पोलीस शिपाई भरती',dp:'महाराष्ट्र राज्य पोलीस',v:'17,000+ पदे',q:'12वी उत्तीर्ण',l:'महाराष्ट्र',ld:'15 डिसेंबर 2026',m:'ऑनलाईन',a:'18 ते 28 वर्षे (आरक्षित: 33 वर्षे)',f:'खुला: ₹450 | मागासवर्गीय: ₹350',dt:[['अर्ज प्रारंभ','10 नोव्हेंबर 2026'],['शेवटचा दिनांक','15 डिसेंबर 2026','05 डिसेंबर 2026']],p:[['1','पोलीस शिपाई (Constable)','12500','12वी (HSC) उत्तीर्ण'],['2','पोलीस शिपाई चालक (Driver)','4500','12वी + हलके वाहन चालक परवाना']],g:'',u:'https://mahapolice.gov.in'},
+{id:5,d:'28/10/2026',c:'schemes',b:'YOJANA',bc:'bg-pink-600 text-white',t:'मुख्यमंत्री माझी लाडकी बहीण योजना: दरमहा ₹1500 अर्ज प्रक्रिया',dp:'महाराष्ट्र शासन',v:'सर्व पात्र महिला',q:'महाराष्ट्रातील महिला, 21-65 वर्षे',l:'महाराष्ट्र',ld:'सुरू आहे',m:'Online Portal',a:'21 ते 65 वर्षे',f:'पूर्णपणे मोफत',dt:[['अर्ज स्थिती','सतत सुरू']],p:[['1','आर्थिक सहाय्य','₹1500/महिना','महाराष्ट्र रहिवासी महिला, कुटुंब उत्पन्न ₹2.5 लाखांपेक्षा कमी']],g:'',u:'https://ladkibahin.maharashtra.gov.in'}
+];
+
+var D = [...fallbackD];
+var $=function(i){return document.getElementById(i)};
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+
+function render(list){
+  $('count').textContent=list.length+' अपडेट्स';
+  $('rows').innerHTML=list.length?list.map(function(x){return '<tr class="hover:bg-slate-800/60 cursor-pointer" onclick="openM(\''+x.id+'\')"><td class="py-3 px-3 text-xs font-semibold text-slate-400 font-mono">'+x.d+'</td><td class="py-3 px-3 font-semibold text-slate-100 leading-snug"><div class="flex flex-wrap items-center gap-2 mb-1"><span class="px-2 py-0.5 rounded text-[10px] font-black uppercase '+x.bc+'">'+x.b+'</span><span class="text-xs text-brand-gold font-bold">'+esc(x.dp)+'</span></div>'+esc(x.t)+'<div class="text-[11px] font-normal text-slate-400 mt-1.5">👥 '+esc(x.v)+'</div></td><td class="py-3 px-3 text-center"><button class="bg-brand-navy hover:bg-blue-700 text-white font-bold text-xs px-3 py-1.5 rounded-lg border border-slate-700">माहिती पहा</button></td></tr>'}).join(''):'<tr><td colspan="3" class="py-8 text-center text-slate-400">कोणतीही माहिती सापडली नाही.</td></tr>';
+}
+
+function openM(id){
+  var x=D.filter(function(j){return j.id==id})[0];if(!x)return;
+  $('mB').textContent=x.b;$('mT').textContent=x.t;$('mD').textContent=x.dp;$('mA').textContent=x.a;$('mF').textContent=x.f;
+  var gs=$('mG');if(x.g){gs.href=x.g;gs.textContent='📄 अधिकृत जाहिरात PDF (GR)';gs.style.display='inline-block'}else{gs.style.display='none'}
+  $('mS').href='https://www.google.com/search?q='+encodeURIComponent(x.t.split(':')[0]+' official notification pdf');
+  $('mL').href=x.u;$('mL').textContent='📝 अधिकृत वेबसाइट / अर्ज';$('mL').style.display='inline-block';
+  var ch=[['एकूण जागा',x.v,'text-brand-gold'],['ठिकाण',x.l,'text-white'],['शेवटची तारीख',x.ld,'text-emerald-400'],['अर्ज पद्धत',x.m,'text-sky-400']];
+  $('mChips').innerHTML=ch.map(function(c){return '<div class="bg-slate-950 p-3 rounded-lg border border-slate-800"><span class="text-slate-400 block text-[11px]">'+c[0]+'</span><strong class="'+c[2]+'">'+esc(c[1])+'</strong></div>'}).join('');
+  $('mP').innerHTML=x.p.map(function(p){return '<tr><td class="p-3 font-bold text-brand-gold">'+p[0]+'</td><td class="p-3 font-bold text-white">'+esc(p[1])+'</td><td class="p-3 text-emerald-400 font-bold">'+esc(p[2])+'</td><td class="p-3 text-slate-300">'+esc(p[3])+'</td></tr>'}).join('');
+  $('mDt').innerHTML=x.dt.map(function(d){return '<div class="flex justify-between text-xs"><span class="text-slate-400">'+d[0]+'</span><span class="text-white font-bold">'+d[1]+'</span></div>'}).join('');
+  $('modal').classList.remove('hidden');
+}
+
+function closeM(){$('modal').classList.add('hidden')}
+
+// Navigation aur Search setup
+document.addEventListener('DOMContentLoaded', function(){
+  var navHTML = NAV.map(function(n){ return '<button onclick="setCat(\''+n[0]+'\',this)" class="px-3 py-1.5 rounded-md hover:bg-slate-800">'+n[1]+'</button>'; }).join('');
+  if($('nav')) $('nav').innerHTML = navHTML;
+  
+  var popHTML = '<b class="text-slate-300">पॉपुलर सर्च:</b> ' + POP.map(function(p){ return '<button onclick="$(\'q\').value=\''+p[0]+'\';search();" class="bg-slate-800 hover:bg-slate-700 px-2 py-1 rounded text-slate-300">'+p[1]+'</button>'; }).join(' ');
+  if($('pop')) $('pop').innerHTML = popHTML;
+  
+  if($('q')) $('q').oninput = search;
+  if($('lang')) $('lang').onchange = function(){ alert('Language switched'); };
+
+  // Pehli baar render karo
+  render(D);
+});
 </script>
+  
 </body>
 </html>
