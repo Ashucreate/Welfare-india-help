@@ -240,6 +240,37 @@ $('lang').addEventListener('change',function(){var t=L[this.value];$('tagline').
 window.onload = function() {
   fetchAutoRSSData();
 };
+ <script>
+  // Page load hone par purana aur naya dono functions chal jayenge
+  window.onload = function() {
+      if (typeof fetchAutorSSData === 'function') {
+          fetchAutorSSData();
+      }
+      loadJobs(); // Yeh live jobs fetch karega
+  };
+
+  // Vercel API se live jobs fetch karke website par dikhane ka code
+  async function loadJobs() {
+    try {
+      const response = await fetch('/api/jobs');
+      const data = await response.json();
+      
+      console.log("Jobs fetched successfully:", data.items);
+      
+      const container = document.getElementById('job-list');
+      if (container && data.items) {
+        container.innerHTML = data.items.map(job => `
+          <div class="job-card" style="padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px;">
+            <h3><a href="${job.u}" target="_blank" style="color: #0066cc; text-decoration: none;">${job.t}</a></h3>
+            <p><strong>Date:</strong> ${new Date(job.date).toLocaleDateString()} | <strong>Category:</strong> ${job.c}</p>
+            ${job.v ? `<span style="background: #e1f5fe; padding: 2px 6px; border-radius: 4px;">${job.v}</span>` : ''}
+          </div>
+        `).join('');
+      }
+    } catch (error) {
+      console.error("Error loading jobs:", error);
+    }
+  }
 </script>
 </body>
 </html>
