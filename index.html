@@ -61,10 +61,7 @@ body{font-family:'Plus Jakarta Sans','Noto Sans Devanagari',system-ui,sans-serif
 <div class="lg:col-span-3 space-y-4">
 <div class="flex items-center justify-between gap-2 bg-brand-navy text-white px-4 py-3 rounded-xl shadow">
 <h2 id="thead" class="text-base sm:text-lg font-black">📋 नवीन भरती व योजना अपडेट्स</h2>
-<div class="flex items-center gap-2">
-  <span id="syncBadge" class="text-[10px] bg-emerald-500 text-slate-950 px-2.5 py-1 rounded-lg font-black shadow-sm">Auto System Active</span>
-  <span id="count" class="text-xs bg-amber-500 text-slate-950 px-3 py-1 rounded-lg font-black shadow-sm"></span>
-</div>
+<span id="count" class="text-xs bg-amber-500 text-slate-950 px-3 py-1 rounded-lg font-black shadow-sm"></span>
 </div>
 <div class="bg-white border border-slate-300 rounded-xl overflow-hidden shadow-sm overflow-x-auto">
 <table class="w-full text-left text-xs sm:text-sm">
@@ -206,52 +203,45 @@ function openM(id){
 
 function closeM(){$('modal').classList.add('hidden')}
 
-// Self-Healing Auto Fetch with Timeout Protection
-async function fetchAutoJobs() {
-  var badge = $('syncBadge');
+// Background Silent Auto Fetch (No visual clutter on frontend)
+async function fetchBackgroundJobs() {
   try {
     var controller = new AbortController();
-    var timeoutId = setTimeout(function() { controller.abort(); }, 8000); // 8s timeout protection
+    var timeoutId = setTimeout(function() { controller.abort(); }, 6000);
     
     var response = await fetch('/api/jobs', { signal: controller.signal });
     clearTimeout(timeoutId);
     
-    if(!response.ok) throw new Error('API Error: ' + response.status);
-    var data = await response.json();
-    
-    if(data && data.items && data.items.length > 0) {
-      // Merge live data safely
-      var liveItems = data.items.map(function(it, i) {
-        return {
-          id: 'live_' + i,
-          d: it.date || 'Today',
-          c: it.c || 'current',
-          b: 'LIVE',
-          bc: 'bg-emerald-600 text-white',
-          t: it.t,
-          dp: it.src || 'Govt Portal',
-          v: it.v || 'जाहिरातीत पहा',
-          l: 'महाराष्ट्र / भारत',
-          ld: 'जाहिरातीत पहा',
-          m: 'Online',
-          a: 'नियमानुसार',
-          f: 'नियमानुसार',
-          dt: [['अपडेट', it.date || 'LATEST']],
-          p: [['1', 'सविस्तर माहिती', '—', 'अधिकृत जाहिरात वाचा']],
-          g: it.g || '',
-          u: it.u || '#'
-        };
-      });
-      D = liveItems.concat(fallbackD);
-      badge.textContent = "Live Synced";
-      badge.className = "text-[10px] bg-emerald-500 text-slate-950 px-2.5 py-1 rounded-lg font-black shadow-sm";
+    if(response.ok) {
+      var data = await response.json();
+      if(data && data.items && data.items.length > 0) {
+        var liveItems = data.items.map(function(it, i) {
+          return {
+            id: 'live_' + i,
+            d: it.date || 'Today',
+            c: it.c || 'current',
+            b: 'LIVE',
+            bc: 'bg-emerald-600 text-white',
+            t: it.t,
+            dp: it.src || 'Govt Portal',
+            v: it.v || 'जाहिरातीत पहा',
+            l: 'महाराष्ट्र / भारत',
+            ld: 'जाहिरातीत पहा',
+            m: 'Online',
+            a: 'नियमानुसार',
+            f: 'नियमानुसार',
+            dt: [['अपडेट', it.date || 'LATEST']],
+            p: [['1', 'सविस्तर माहिती', '—', 'अधिकृत जाहिरात वाचा']],
+            g: it.g || '',
+            u: it.u || '#'
+          };
+        });
+        D = liveItems.concat(fallbackD);
+      }
     }
   } catch(err) {
-    console.warn("API Timeout/Error handled gracefully. Using robust fallback list.", err);
-    // Auto fallback to ensure site never breaks or shows errors to users
+    // Silent fallback to standard list, zero user interruption
     D = [...fallbackD];
-    badge.textContent = "Auto System Active";
-    badge.className = "text-[10px] bg-amber-400 text-slate-950 px-2.5 py-1 rounded-lg font-black shadow-sm";
   }
   render(D);
   if($('side')) {
@@ -277,7 +267,7 @@ document.addEventListener('DOMContentLoaded', function(){
   
   if($('q')) $('q').oninput = search;
   
-  fetchAutoJobs();
+  fetchBackgroundJobs();
 });
 </script>
 </body>
