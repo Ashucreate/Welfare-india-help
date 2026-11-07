@@ -7,86 +7,108 @@ export default async function handler(req, res) {
   if (!supabaseUrl || !supabaseKey) {
     return res.status(500).json({ 
       success: false, 
-      error: 'SUPABASE_URL or SUPABASE_ANON_KEY environment variable is missing on Vercel.' 
+      error: 'SUPABASE_URL ya SUPABASE_ANON_KEY Vercel par missing hai.' 
     });
   }
 
-  // Jobs feed targeting all Central & Maharashtra vacancies (Clerk, Peon, Court, Police, Banking, MPSC, UPSC, etc.)
-  const jobsToSync = [
-    { 
-      title: 'UPSC Civil Services Examination 2027: IAS / IPS Officer Recruitment', 
-      category: 'central', 
-      link: 'https://upsc.gov.in', 
-      date: new Date().toISOString().split('T')[0] 
-    },
-    { 
-      title: 'MPSC Rajyaseva Prelims Exam 2026: Maharashtra Civil Services', 
-      category: 'current', 
-      link: 'https://mpsc.gov.in', 
-      date: new Date().toISOString().split('T')[0] 
-    },
-    { 
-      title: 'IBPS PO & Clerk Recruitment 2026: Banking Vacancies', 
-      category: 'central', 
-      link: 'https://ibps.in', 
-      date: new Date().toISOString().split('T')[0] 
-    },
-    { 
-      title: 'Bombay High Court & District Courts: Clerk & Peon Bharti 2026', 
-      category: 'current', 
-      link: 'https://bombayhighcourt.nic.in', 
-      date: new Date().toISOString().split('T')[0] 
-    },
-    { 
-      title: 'Maharashtra Police Sipahi Bharti 2026: 17,000+ Posts', 
-      category: 'current', 
-      link: 'https://mahapolice.gov.in', 
-      date: new Date().toISOString().split('T')[0] 
-    },
-    { 
-      title: 'Railway RRB ALP & Group D Recruitment 2026', 
-      category: 'central', 
-      link: 'https://rrcb.gov.in', 
-      date: new Date().toISOString().split('T')[0] 
-    }
+  // Live RSS feeds covering Central India & Maharashtra Govt Vacancies
+  const RSS_FEEDS = [
+    'https://www.freejobalert.com/feed/',
+    'https://majhinaukri.in/feed/',
+    'https://sarkarinaukri.com/feed/'
   ];
 
-  try {
-    let addedCount = 0;
+  function classifyCategory(title) {
+    const t = title.toLowerCase();
+    // Maharashtra State Jobs
+    if (t.includes('mpsc') || t.includes('police') || t.includes('maharashtra') || t.includes('zp') || t.includes('arogya') || t.includes('talathi') || t.includes('shasan')) {
+      return 'current';
+    }
+    // Central & All Dept Jobs (Clerk, Peon, Court, Bank, Railway, SSC, UPSC)
+    return 'central';
+  }
 
-    for (const job of jobsToSync) {
-      // 1. Check if job already exists in database
-      const checkRes = await fetch(`${supabaseUrl}/rest/v1/jobs?title=eq.${encodeURIComponent(job.title)}&select=id`, {
-        headers: {
-          'apikey': supabaseKey,
-          'Authorization': `Bearer ${supabaseKey}`
-        }
-      });
+  function extractItemsFromXML(xmlText) {
+    const items = [];
+    const itemRegex = /<item>[\s\S]*?<\/item>/gi;
+    const matches = xmlText.match(itemRegex) || [];
 
-      const existingData = await checkRes.json();
+    for (const itemXml of matches) {
+      const titleMatch = itemXml.match(/<title>(.*?)<\/title>/i);
+      const linkMatch = itemXml.match(/<link>(.*?)<\/link>/i);
+      const pubDateMatch = itemXml.match(/<pubDate>(.*?)<\/pubDate>/i);
 
-      // 2. Insert only if duplicate doesn't exist
-      if (Array.isArray(existingData) && existingData.length === 0) {
-        const insertRes = await fetch(`${supabaseUrl}/rest/v1/jobs`, {
-          method: 'POST',
-          headers: {
-            'apikey': supabaseKey,
-            'Authorization': `Bearer ${supabaseKey}`,
-            'Content-Type': 'application/json',
-            'Prefer': 'return=minimal'
-          },
-          body: JSON.stringify(job)
+      if (titleMatch && linkMatch) {
+        let title = titleMatch[1].replace(/<!\[CDATA\[(.*?)\]\]>/gi, '$1').trim();
+        let link = linkMatch[1].replace(/<!\[CDATA\[(.*?)\]\]>/gi, '$1').trim();
+        let pubDate = pubDateMatch ? pubDateMatch[1] : new Date().toISOString();
+
+        // Standardize clean title
+        title = title.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+
+        items.push({
+          title: title,
+          link: link,
+          category: classifyCategory(title),
+          date: new Date(pubDate).toISOString().split('T')[0]
         });
+      }
+    }
+    return items;
+  }
 
-        if (insertRes.ok) {
-          addedCount++;
+  try {
+    let totalInserted = 0;
+
+    for (const feedUrl of RSS_FEEDS) {
+      try {
+        const response = await fetch(feedUrl, {
+          headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' }
+        });
+        
+        if (!response.ok) continue;
+
+        const xmlText = await response.text();
+        const rawJobs = extractItemsFromXML(xmlText);
+
+        // Process top 15 latest jobs per feed
+        for (const job of rawJobs.slice(0, 15)) {
+          // Check if already present in database
+          const checkRes = await fetch(`${supabaseUrl}/rest/v1/jobs?title=eq.${encodeURIComponent(job.title)}&select=id`, {
+            headers: {
+              'apikey': supabaseKey,
+              'Authorization': `Bearer ${supabaseKey}`
+            }
+          });
+
+          const existingData = await checkRes.json();
+
+          // Insert if not duplicate
+          if (Array.isArray(existingData) && existingData.length === 0) {
+            const insertRes = await fetch(`${supabaseUrl}/rest/v1/jobs`, {
+              method: 'POST',
+              headers: {
+                'apikey': supabaseKey,
+                'Authorization': `Bearer ${supabaseKey}`,
+                'Content-Type': 'application/json',
+                'Prefer': 'return=minimal'
+              },
+              body: JSON.stringify(job)
+            });
+
+            if (insertRes.ok) {
+              totalInserted++;
+            }
+          }
         }
+      } catch (feedError) {
+        console.error('Feed error:', feedError);
       }
     }
 
     return res.status(200).json({
       success: true,
-      message: `Ingestion successful! Added ${addedCount} new jobs to Supabase.`
+      message: `Live Sync Successful! Added ${totalInserted} new department jobs to database.`
     });
   } catch (error) {
     return res.status(500).json({ success: false, error: error.message });
