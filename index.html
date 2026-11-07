@@ -258,8 +258,39 @@ var $=function(i){return document.getElementById(i)};
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 
 function render(list){
-  $('count').textContent=list.length+' अपडेट्स';
-  $('rows').innerHTML=list.length?list.map(function(x){return '<tr class="hover:bg-slate-800/60 cursor-pointer" onclick="openM(\''+x.id+'\')"><td class="py-3 px-3 text-xs font-semibold text-slate-400 font-mono">'+x.d+'</td><td class="py-3 px-3 font-semibold text-slate-100 leading-snug"><div class="flex flex-wrap items-center gap-2 mb-1"><span class="px-2 py-0.5 rounded text-[10px] font-black uppercase '+x.bc+'">'+x.b+'</span><span class="text-xs text-brand-gold font-bold">'+esc(x.dp)+'</span></div>'+esc(x.t)+'<div class="text-[11px] font-normal text-slate-400 mt-1.5">👥 '+esc(x.v)+'</div></td><td class="py-3 px-3 text-center"><button class="bg-brand-navy hover:bg-blue-700 text-white font-bold text-xs px-3 py-1.5 rounded-lg border border-slate-700">माहिती पहा</button></td></tr>'}).join(''):'<tr><td colspan="3" class="py-8 text-center text-slate-400">कोणतीही माहिती सापडली नाही.</td></tr>';
+  if($('count')) $('count').textContent=list.length+' अपडेट्स';
+  var rows = $('rows');
+  if(!rows) return;
+  rows.innerHTML=list.length?list.map(function(x){
+    return '<tr class="hover:bg-slate-800/60 cursor-pointer" onclick="openM(\''+x.id+'\')">'+
+      '<td class="py-3 px-3 text-xs font-semibold text-slate-400 font-mono">'+x.d+'</td>'+
+      '<td class="py-3 px-3 font-semibold text-slate-100 leading-snug">'+
+        '<div class="flex flex-wrap items-center gap-2 mb-1">'+
+          '<span class="px-2 py-0.5 rounded text-[10px] font-black uppercase '+x.bc+'">'+x.b+'</span>'+
+          '<span class="text-xs text-brand-gold font-bold">'+esc(x.dp)+'</span>'+
+        '</div>'+
+        esc(x.t)+
+        '<div class="text-[11px] font-normal text-slate-400 mt-1.5">👥 '+esc(x.v)+'</div>'+
+      '</td>'+
+      '<td class="py-3 px-3 text-center">'+
+        '<button class="bg-brand-navy hover:bg-blue-700 text-white font-bold text-xs px-3 py-1.5 rounded-lg border border-slate-700">माहिती पहा</button>'+
+      '</td>'+
+    '</tr>';
+  }).join(''):'<tr><td colspan="3" class="py-8 text-center text-slate-400">कोणतीही माहिती सापडली नाही.</td></tr>';
+}
+
+function setCat(c,btn){
+  cur=c; if($('q')) $('q').value='';
+  document.querySelectorAll('#nav button').forEach(function(b){b.className='px-3 py-1.5 rounded-md hover:bg-slate-800'});
+  if(btn) btn.className='px-3 py-1.5 rounded-md '+N;
+  render(c==='all'?D:D.filter(function(x){return x.c===c}));
+}
+
+function search(){
+  var qEl = $('q');
+  if(!qEl) return;
+  var v=qEl.value.toLowerCase().trim();
+  render(D.filter(function(x){return (x.t+' '+x.dp+' '+x.c+' '+x.b).toLowerCase().indexOf(v)>-1}));
 }
 
 function openM(id){
@@ -271,27 +302,45 @@ function openM(id){
   var ch=[['एकूण जागा',x.v,'text-brand-gold'],['ठिकाण',x.l,'text-white'],['शेवटची तारीख',x.ld,'text-emerald-400'],['अर्ज पद्धत',x.m,'text-sky-400']];
   $('mChips').innerHTML=ch.map(function(c){return '<div class="bg-slate-950 p-3 rounded-lg border border-slate-800"><span class="text-slate-400 block text-[11px]">'+c[0]+'</span><strong class="'+c[2]+'">'+esc(c[1])+'</strong></div>'}).join('');
   $('mP').innerHTML=x.p.map(function(p){return '<tr><td class="p-3 font-bold text-brand-gold">'+p[0]+'</td><td class="p-3 font-bold text-white">'+esc(p[1])+'</td><td class="p-3 text-emerald-400 font-bold">'+esc(p[2])+'</td><td class="p-3 text-slate-300">'+esc(p[3])+'</td></tr>'}).join('');
-  $('mDt').innerHTML=x.dt.map(function(d){return '<div class="flex justify-between text-xs"><span class="text-slate-400">'+d[0]+'</span><span class="text-white font-bold">'+d[1]+'</span></div>'}).join('');
+  $('mDt').innerHTML=x.dt.map(function(d){return '<div class="flex justify-between text-xs py-1 border-b border-slate-900"><span class="text-slate-400">'+d[0]+'</span><span class="text-white font-bold">'+d[1]+'</span></div>'}).join('');
   $('modal').classList.remove('hidden');
 }
 
 function closeM(){$('modal').classList.add('hidden')}
 
-// Navigation aur Search setup
 document.addEventListener('DOMContentLoaded', function(){
-  var navHTML = NAV.map(function(n){ return '<button onclick="setCat(\''+n[0]+'\',this)" class="px-3 py-1.5 rounded-md hover:bg-slate-800">'+n[1]+'</button>'; }).join('');
+  var navHTML = NAV.map(function(n, i){ 
+    return '<button onclick="setCat(\''+n[0]+'\',this)" class="px-3 py-1.5 rounded-md '+(i===0?N:'hover:bg-slate-800')+'">'+n[1]+'</button>'; 
+  }).join('');
   if($('nav')) $('nav').innerHTML = navHTML;
   
-  var popHTML = '<b class="text-slate-300">पॉपुलर सर्च:</b> ' + POP.map(function(p){ return '<button onclick="$(\'q\').value=\''+p[0]+'\';search();" class="bg-slate-800 hover:bg-slate-700 px-2 py-1 rounded text-slate-300">'+p[1]+'</button>'; }).join(' ');
+  var popHTML = '<b class="text-slate-300">पॉपुलर सर्च:</b> ' + POP.map(function(p){ 
+    return '<button onclick="$(\'q\').value=\''+p[0]+'\';search();" class="bg-slate-800 hover:bg-slate-700 px-2.5 py-1 rounded text-slate-300 text-xs">'+p[1]+'</button>'; 
+  }).join(' ');
   if($('pop')) $('pop').innerHTML = popHTML;
   
   if($('q')) $('q').oninput = search;
-  if($('lang')) $('lang').onchange = function(){ alert('Language switched'); };
+  
+  // Sidebar high-priority list
+  if($('side')) {
+    $('side').innerHTML = D.slice(0,5).map(function(x){
+      return '<li class="p-2 rounded hover:bg-slate-800 border-b border-slate-800/50 cursor-pointer" onclick="openM(\''+x.id+'\')">'+
+        '<span class="text-brand-gold font-bold block text-[11px]">'+x.d+'</span>'+
+        '<span class="text-slate-200 font-medium block leading-snug">'+esc(x.t)+'</span>'+
+      '</li>';
+    }).join('');
+  }
 
-  // Pehli baar render karo
+  // Hide sync badge or set to safe mode
+  var syncBadge = $('syncBadge');
+  if(syncBadge) {
+    syncBadge.className = "text-[11px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2.5 py-1 rounded-full font-bold whitespace-nowrap";
+    syncBadge.innerHTML = '<i class="fa-solid fa-shield-halved text-emerald-400 mr-1"></i> Secure Portal Active';
+  }
+
+  // Initial table render
   render(D);
 });
 </script>
-  
 </body>
 </html>
