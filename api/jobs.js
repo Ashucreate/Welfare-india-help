@@ -17,9 +17,20 @@ export default async function handler(req, res) {
 
     if (error) throw error;
 
+    // Supabase columns mapping to frontend format
+    const formattedJobs = (jobs || []).map(item => ({
+      t: item.title || item.t,         // Supabase 'title' -> Frontend 't'
+      c: item.category || item.c || 'current', // Supabase 'category' -> Frontend 'c'
+      date: item.date || item.created_at ? new Date(item.created_at).toLocaleDateString() : 'Today',
+      src: item.src || 'Govt Portal',
+      v: item.v || 'जाहिरातीत पहा',
+      g: item.g || '',
+      u: item.u || '#'
+    }));
+
     return res.status(200).json({
       success: true,
-      items: jobs || []
+      items: formattedJobs
     });
   } catch (err) {
     return res.status(500).json({
