@@ -7,28 +7,29 @@
     <style>
         :root {
             --primary-blue: #0b2545;
-            --accent-orange: #f97316;
-            --bg-dark: #0f172a;
-            --card-bg: #1e293b;
-            --text-light: #f8fafc;
-            --border-color: #334155;
+            --sarkari-red: #c0392b;
+            --accent-orange: #d35400;
+            --bg-light: #f4f6f9;
+            --card-bg: #ffffff;
+            --text-dark: #2c3e50;
+            --border-color: #bdc3c7;
         }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-light);
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
             margin: 0;
             padding: 0;
-            line-height: 1.5;
+            line-height: 1.4;
         }
         header {
             background-color: var(--primary-blue);
-            padding: 15px 20px;
-            border-bottom: 4px solid var(--accent-orange);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            padding: 15px 10px;
+            border-bottom: 4px solid var(--sarkari-red);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         .header-container {
-            max-width: 1200px;
+            max-width: 1000px;
             margin: 0 auto;
             display: flex;
             flex-direction: column;
@@ -36,100 +37,100 @@
             text-align: center;
         }
         .top-banner {
-            font-size: 12px;
-            background: #020617;
-            color: #38bdf8;
-            padding: 5px 15px;
-            border-radius: 20px;
-            margin-bottom: 10px;
-            border: 1px solid var(--border-color);
+            font-size: 11px;
+            background: #1e3a8a;
+            color: #ffffff;
+            padding: 4px 12px;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            font-weight: bold;
         }
         .logo-area h1 {
             margin: 0;
-            font-size: 32px;
-            font-weight: 800;
-            letter-spacing: 1px;
+            font-size: 28px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
         }
-        .logo-area h1 span.maha { color: var(--accent-orange); }
+        .logo-area h1 span.maha { color: #f39c12; }
         .logo-area h1 span.job { color: #ffffff; }
-        .logo-area h1 span.alert { color: #38bdf8; }
+        .logo-area h1 span.alert { color: #3498db; }
         .tagline {
-            font-size: 13px;
-            color: #94a3b8;
-            margin-top: 5px;
-            margin-bottom: 15px;
-            font-weight: 500;
+            font-size: 12px;
+            color: #ecf0f1;
+            margin-top: 4px;
+            margin-bottom: 12px;
         }
         .nav-tabs {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            background: var(--card-bg);
-            padding: 10px;
-            gap: 8px;
+            background: #ffffff;
+            padding: 8px;
+            gap: 6px;
             border-bottom: 2px solid var(--border-color);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
         .nav-tabs button {
-            background: #0f172a;
-            color: #cbd5e1;
-            border: 1px solid var(--border-color);
-            padding: 8px 16px;
-            border-radius: 6px;
+            background: #f8fafc;
+            color: #1e293b;
+            border: 1px solid #cbd5e1;
+            padding: 6px 14px;
+            border-radius: 4px;
             cursor: pointer;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: bold;
-            transition: all 0.2s ease;
+            transition: all 0.2s;
         }
         .nav-tabs button:hover, .nav-tabs button.active {
-            background: var(--accent-orange);
+            background: var(--sarkari-red);
             color: white;
-            border-color: var(--accent-orange);
+            border-color: var(--sarkari-red);
         }
         .search-wrapper {
             width: 100%;
-            max-width: 650px;
-            margin: 15px auto 5px auto;
+            max-width: 550px;
+            margin: 12px auto 4px auto;
             display: flex;
         }
         .search-wrapper input {
             width: 100%;
-            padding: 10px 15px;
-            border: 2px solid var(--accent-orange);
-            border-radius: 6px 0 0 6px;
-            background: #020617;
-            color: #fff;
+            padding: 8px 12px;
+            border: 2px solid var(--primary-blue);
+            border-radius: 4px 0 0 4px;
+            background: #ffffff;
+            color: #000;
             outline: none;
-            font-size: 14px;
+            font-size: 13px;
         }
         .search-wrapper button {
-            background: var(--accent-orange);
+            background: var(--primary-blue);
             color: white;
             border: none;
-            padding: 0 25px;
-            border-radius: 0 6px 6px 0;
+            padding: 0 20px;
+            border-radius: 0 4px 4px 0;
             font-weight: bold;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
         }
         .main-container {
-            max-width: 1200px;
-            margin: 25px auto;
-            padding: 0 15px;
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 0 10px;
         }
         .section-box {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 8px;
+            border-radius: 4px;
             overflow: hidden;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
-            margin-bottom: 25px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
         }
         .section-header {
             background: var(--primary-blue);
-            padding: 12px 18px;
-            font-size: 16px;
+            padding: 10px 15px;
+            font-size: 15px;
             font-weight: bold;
-            border-left: 5px solid var(--accent-orange);
+            border-left: 5px solid var(--sarkari-red);
             color: #fff;
             display: flex;
             justify-content: space-between;
@@ -138,43 +139,44 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            background: #020617;
+            background: #ffffff;
         }
         th, td {
-            padding: 12px 15px;
+            padding: 10px 12px;
             text-align: left;
-            border-bottom: 1px solid var(--border-color);
-            font-size: 14px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 13px;
+            color: #334155;
         }
         th {
-            background: #1e293b;
-            color: #cbd5e1;
-            font-weight: 600;
+            background: #f1f5f9;
+            color: #0f172a;
+            font-weight: bold;
+            border-bottom: 2px solid #cbd5e1;
         }
-        tr:hover { background: #0f172a; }
+        tr:hover { background: #f8fafc; }
         a.action-btn {
-            background: rgba(249, 115, 22, 0.15);
-            color: var(--accent-orange);
-            padding: 6px 12px;
-            border-radius: 4px;
+            background: #2563eb;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 3px;
             text-decoration: none;
             font-weight: bold;
-            border: 1px solid var(--accent-orange);
-            transition: all 0.2s;
+            font-size: 12px;
             display: inline-block;
+            transition: background 0.2s;
         }
         a.action-btn:hover {
-            background: var(--accent-orange);
-            color: white;
+            background: #1d4ed8;
         }
         footer {
             text-align: center;
-            padding: 25px;
+            padding: 20px;
             background: var(--primary-blue);
-            margin-top: 50px;
-            font-size: 13px;
-            color: #94a3b8;
-            border-top: 3px solid var(--border-color);
+            margin-top: 40px;
+            font-size: 12px;
+            color: #cbd5e1;
+            border-top: 3px solid var(--sarkari-red);
         }
     </style>
 </head>
@@ -189,7 +191,7 @@
             </div>
 
             <div class="search-wrapper">
-                <input type="text" id="searchInput" onkeyup="searchJobs()" placeholder="Search Jobs, Hall Tickets, Results: MPSC, Police, Railway, ZP...">
+                <input type="text" id="searchInput" onkeyup="searchJobs()" placeholder="Search Jobs, Hall Tickets, Results: MPSC, Police, Railway...">
                 <button>Search</button>
             </div>
         </div>
@@ -207,7 +209,7 @@
         <div class="section-box">
             <div class="section-header">
                 <span>📋 Live Database Active Recruitments</span>
-                <span style="font-size: 12px; color: #38bdf8;" id="dbStatus">● Connecting Supabase...</span>
+                <span style="font-size: 11px; color: #93c5fd;" id="dbStatus">● Connecting Supabase...</span>
             </div>
             
             <table id="jobTable">
@@ -220,7 +222,7 @@
                 </thead>
                 <tbody id="jobTableBody">
                     <tr>
-                        <td colspan="3" style="text-align: center; color: #94a3b8; padding: 30px;">Loading live records from Supabase database...</td>
+                        <td colspan="3" style="text-align: center; color: #64748b; padding: 25px;">Loading live records from Supabase database...</td>
                     </tr>
                 </tbody>
             </table>
@@ -232,24 +234,26 @@
     </footer>
 
     <script>
-        // SUPABASE CONFIGURATION (Yahan apna project URL aur Anon Key daal de bhai)
+        // SUPABASE CONFIGURATION
         const SUPABASE_URL = 'https://whxfromysvmqvhghqodj.supabase.co'; 
         const SUPABASE_ANON_KEY = 'sb_publishable_M1XBQcyPuc6T6mY2Xp8ung_-boHGSJ';
 
         let allPortalData = [];
         window.currentCategory = 'all';
 
-               async function fetchSupabaseLiveJobs() {
+        async function fetchSupabaseLiveJobs() {
             const tbody = document.getElementById('jobTableBody');
             const statusIndicator = document.getElementById('dbStatus');
 
             try {
-                // Now fetching securely from our Vercel Serverless API route (/api/jobs)
-                const response = await fetch('/api/jobs');
-                const result = await response.json();
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/jobs?select=*&order=id.desc`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    }
+                });
 
-                // Check if success and items exist
-                const data = result.items || result;
+                const data = await response.json();
 
                 if (data && data.length > 0) {
                     allPortalData = data.map(job => ({
@@ -259,22 +263,37 @@
                         link: job.link || job.apply_link || '#'
                     }));
                     renderTable(allPortalData);
-                    statusIndicator.innerText = '● Live Synced (API)';
-                    statusIndicator.style.color = '#4ade80';
+                    statusIndicator.innerText = '● Live Synced (Supabase)';
+                    statusIndicator.style.color = '#86efac';
                 } else {
-                    tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: #f87171; padding: 20px;">Database mein filhal koi active job nahi hai. Cron sync chal raha hai.</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: #dc2626; padding: 20px;">Database mein filhal koi active job nahi hai. Cron sync chal raha hai.</td></tr>`;
                     statusIndicator.innerText = '● No Active Records';
                 }
             } catch (err) {
-                console.error("API fetch error:", err);
+                console.error("Supabase fetch error:", err);
                 statusIndicator.innerText = '● Connection Error';
-                statusIndicator.style.color = '#f87171';
-                tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: #f87171; padding: 20px;">Error connecting to database. Please check configuration.</td></tr>`;
+                statusIndicator.style.color = '#fca5a5';
+                tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: #dc2626; padding: 20px;">Error connecting to database. Please check configuration.</td></tr>`;
             }
         }
- 
-                
 
+        function renderTable(data) {
+            const tbody = document.getElementById('jobTableBody');
+            tbody.innerHTML = '';
+            if(data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: #64748b; padding: 20px;">No matching records found.</td></tr>`;
+                return;
+            }
+            data.forEach(job => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${job.date}</strong></td>
+                    <td>${job.title}</td>
+                    <td style="text-align: center;"><a href="${job.link}" target="_blank" class="action-btn">Apply / View</a></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
 
         function filterCategory(cat, btn) {
             window.currentCategory = cat;
