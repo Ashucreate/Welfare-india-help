@@ -1,9 +1,10 @@
 import { createClient } from '@supabase/supabase-js'
 
 const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_ANON_KEY
+  'https://whxfromysvmqvhghqodj.supabase.co',
+  'sb_publishable_M1XBQcyPuc6T6mY2Xp8ung_-boHGSJ'
 )
+
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
