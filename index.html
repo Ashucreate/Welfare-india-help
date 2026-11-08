@@ -207,9 +207,6 @@
     <div class="main-container">
         <div class="section-box">
             <div class="section-header">
-                <span>📋 Live Database Active Recruitments</span>
-                <span style="font-size: 11px; color: #93c5fd;" id="dbStatus">● Connecting API...</span>
-            </div>
             
             <table id="jobTable">
                 <thead>
@@ -313,5 +310,63 @@
             fetchSupabaseLiveJobs();
         };
     </script>
+                        function renderTable(data) {
+            const tbody = document.getElementById('jobTableBody');
+            tbody.innerHTML = '';
+            if(data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: #64748b; padding: 20px;">No matching records found.</td></tr>`;
+                return;
+            }
+            data.forEach((job, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${job.date}</strong></td>
+                    <td><a href="javascript:void(0)" onclick="openJobDetails(${index})" style="color: #1d4ed8; text-decoration: none; font-weight: bold;">${job.title}</a></td>
+                    <td style="text-align: center;"><a href="${job.link || '#'}" target="_blank" class="action-btn">Apply</a></td>
+                `;
+                tbody.appendChild(tr);
+            });
+            window.currentJobList = data;
+        }
+
+        function openJobDetails(index) {
+            const job = window.currentJobList[index];
+            let modal = document.getElementById('jobDetailModal');
+            if(!modal) {
+                modal = document.createElement('div');
+                modal.id = 'jobDetailModal';
+                modal.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); display:flex; justify-content:center; align-items:center; z-index:1000; padding:15px;";
+                document.body.appendChild(modal);
+            }
+
+            modal.innerHTML = `
+                <div style="background:#fff; width:100%; max-width:600px; border-radius:6px; overflow:hidden; box-shadow:0 4px 15px rgba(0,0,0,0.2); border-top:5px solid #c0392b;">
+                    <div style="background:#0b2545; color:#fff; padding:12px 15px; display:flex; justify-content:space-between; align-items:center;">
+                        <h3 style="margin:0; font-size:16px;">📋 Recruitment Details</h3>
+                        <button onclick="closeModal()" style="background:none; border:none; color:#fff; font-size:18px; cursor:pointer; font-weight:bold;">✕</button>
+                    </div>
+                    <div style="padding:20px; max-height:75vh; overflow-y:auto; font-size:13px; color:#334155;">
+                        <h2 style="color:#0b2545; font-size:18px; margin-top:0; border-bottom:2px solid #e2e8f0; padding-bottom:8px;">${job.title}</h2>
+                        <table style="width:100%; margin-bottom:15px; border-collapse:collapse;">
+                            <tr><td style="padding:8px; border:1px solid #cbd5e1; background:#f8fafc; width:35%;"><strong>Category</strong></td><td style="padding:8px; border:1px solid #cbd5e1;">${job.category.toUpperCase()}</td></tr>
+                            <tr><td style="padding:8px; border:1px solid #cbd5e1; background:#f8fafc;"><strong>Notification Date</strong></td><td style="padding:8px; border:1px solid #cbd5e1;">${job.date}</td></tr>
+                            <tr><td style="padding:8px; border:1px solid #cbd5e1; background:#f8fafc;"><strong>Total Vacancies / Posts</strong></td><td style="padding:8px; border:1px solid #cbd5e1;">As per official notification / Multiple Posts</td></tr>
+                            <tr><td style="padding:8px; border:1px solid #cbd5e1; background:#f8fafc;"><strong>Application Fee</strong></td><td style="padding:8px; border:1px solid #cbd5e1;">Check official notification for category-wise fees</td></tr>
+                            <tr><td style="padding:8px; border:1px solid #cbd5e1; background:#f8fafc;"><strong>Eligibility / Qualification</strong></td><td style="padding:8px; border:1px solid #cbd5e1;">Degree / 10th / 12th / Diploma (Refer GR PDF)</td></tr>
+                        </table>
+                        <div style="display:flex; gap:10px; justify-content:center; margin-top:20px;">
+                            <a href="${job.link || '#'}" target="_blank" style="background:#16a34a; color:#fff; padding:10px 20px; text-decoration:none; border-radius:4px; font-weight:bold;">🔗 Apply Online / Official Website</a>
+                            <button onclick="closeModal()" style="background:#64748b; color:#fff; padding:10px 20px; border:none; border-radius:4px; font-weight:bold; cursor:pointer;">Close</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('jobDetailModal');
+            if(modal) modal.style.display = 'none';
+        }
 </body>
 </html>
