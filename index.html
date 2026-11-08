@@ -184,7 +184,6 @@
 
     <header>
         <div class="header-container">
-            <div class="top-banner">🚀 100% Automated Live Recruitment & Sarkari Result Portal</div>
             <div class="logo-area">
                 <h1><span class="maha">Maha</span> <span class="job">JOB</span> <span class="alert">ALERT</span></h1>
                 <p class="tagline">Maharashtra's Most Trusted Recruitment Portal (Majhi Naukri & Sarkari Result Style)</p>
@@ -209,7 +208,7 @@
         <div class="section-box">
             <div class="section-header">
                 <span>📋 Live Database Active Recruitments</span>
-                <span style="font-size: 11px; color: #93c5fd;" id="dbStatus">● Connecting Supabase...</span>
+                <span style="font-size: 11px; color: #93c5fd;" id="dbStatus">● Connecting API...</span>
             </div>
             
             <table id="jobTable">
@@ -222,7 +221,7 @@
                 </thead>
                 <tbody id="jobTableBody">
                     <tr>
-                        <td colspan="3" style="text-align: center; color: #64748b; padding: 25px;">Loading live records from Supabase database...</td>
+                        <td colspan="3" style="text-align: center; color: #64748b; padding: 25px;">Loading live records...</td>
                     </tr>
                 </tbody>
             </table>
@@ -234,10 +233,6 @@
     </footer>
 
     <script>
-        // SUPABASE CONFIGURATION
-        const SUPABASE_URL = 'https://whxfromysvmqvhghqodj.supabase.co'; 
-        const SUPABASE_ANON_KEY = 'sb_publishable_M1XBQcyPuc6T6mY2Xp8ung_-boHGSJ';
-
         let allPortalData = [];
         window.currentCategory = 'all';
 
@@ -246,14 +241,9 @@
             const statusIndicator = document.getElementById('dbStatus');
 
             try {
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/jobs?select=*&order=id.desc`, {
-                    headers: {
-                        'apikey': SUPABASE_ANON_KEY,
-                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-                    }
-                });
-
-                const data = await response.json();
+                const response = await fetch('/api/jobs');
+                const result = await response.json();
+                const data = result.items || result;
 
                 if (data && data.length > 0) {
                     allPortalData = data.map(job => ({
@@ -263,17 +253,17 @@
                         link: job.link || job.apply_link || '#'
                     }));
                     renderTable(allPortalData);
-                    statusIndicator.innerText = '● Live Synced (Supabase)';
+                    statusIndicator.innerText = '● Live Synced (API)';
                     statusIndicator.style.color = '#86efac';
                 } else {
-                    tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: #dc2626; padding: 20px;">Database mein filhal koi active job nahi hai. Cron sync chal raha hai.</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: #dc2626; padding: 20px;">No active records found.</td></tr>`;
                     statusIndicator.innerText = '● No Active Records';
                 }
             } catch (err) {
-                console.error("Supabase fetch error:", err);
+                console.error("API fetch error:", err);
                 statusIndicator.innerText = '● Connection Error';
                 statusIndicator.style.color = '#fca5a5';
-                tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: #dc2626; padding: 20px;">Error connecting to database. Please check configuration.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: #dc2626; padding: 20px;">Error connecting to API.</td></tr>`;
             }
         }
 
