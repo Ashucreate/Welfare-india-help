@@ -18,16 +18,14 @@ export default async function handler(req, res) {
 
     if (error) throw error;
 
-    // Supabase columns mapping to frontend format
+        // Direct standard keys return karo jo frontend direct use karega
     const formattedJobs = (jobs || []).map(item => ({
-      t: item.title || item.t,         // Supabase 'title' -> Frontend 't'
-      c: item.category || item.c || 'current', // Supabase 'category' -> Frontend 'c'
-      date: item.date || item.created_at ? new Date(item.created_at).toLocaleDateString() : 'Today',
-      src: item.src || 'Govt Portal',
-      v: item.v || 'जाहिरातीत पहा',
-      g: item.g || '',
-      u: item.u || '#'
+      category: item.category || item.c || 'current',
+      date: item.date || (item.created_at ? new Date(item.created_at).toLocaleDateString() : 'Today'),
+      title: item.title || item.t || 'Govt Recruitment',
+      link: item.link || item.apply_link || item.u || '#'
     }));
+    
 
     return res.status(200).json({
       success: true,
