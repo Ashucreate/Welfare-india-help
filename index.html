@@ -239,60 +239,42 @@
         let allPortalData = [];
         window.currentCategory = 'all';
 
-        async function fetchSupabaseLiveJobs() {
+               async function fetchSupabaseLiveJobs() {
             const tbody = document.getElementById('jobTableBody');
             const statusIndicator = document.getElementById('dbStatus');
 
             try {
-                // Direct REST call to Supabase 'jobs' table
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/jobs?select=*&order=id.desc`, {
-                    headers: {
-                        'apikey': SUPABASE_ANON_KEY,
-                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-                    }
-                });
+                // Now fetching securely from our Vercel Serverless API route (/api/jobs)
+                const response = await fetch('/api/jobs');
+                const result = await response.json();
 
-                const data = await response.json();
+                // Check if success and items exist
+                const data = result.items || result;
 
                 if (data && data.length > 0) {
                     allPortalData = data.map(job => ({
                         category: job.category || 'current',
                         date: job.date || '08/11/2026',
                         title: job.title || job.job_title,
-                        link: job.link || job.apply_link
+                        link: job.link || job.apply_link || '#'
                     }));
                     renderTable(allPortalData);
-                    statusIndicator.innerText = '● Live Synced (Supabase)';
+                    statusIndicator.innerText = '● Live Synced (API)';
                     statusIndicator.style.color = '#4ade80';
                 } else {
                     tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: #f87171; padding: 20px;">Database mein filhal koi active job nahi hai. Cron sync chal raha hai.</td></tr>`;
                     statusIndicator.innerText = '● No Active Records';
                 }
             } catch (err) {
-                console.error("Supabase fetch error:", err);
+                console.error("API fetch error:", err);
                 statusIndicator.innerText = '● Connection Error';
                 statusIndicator.style.color = '#f87171';
                 tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: #f87171; padding: 20px;">Error connecting to database. Please check configuration.</td></tr>`;
             }
         }
+ 
+                
 
-        function renderTable(data) {
-            const tbody = document.getElementById('jobTableBody');
-            tbody.innerHTML = '';
-            if(data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: #94a3b8; padding: 20px;">No matching records found.</td></tr>`;
-                return;
-            }
-            data.forEach(job => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td><strong>${job.date}</strong></td>
-                    <td>${job.title}</td>
-                    <td style="text-align: center;"><a href="${job.link}" target="_blank" class="action-btn">Apply / View</a></td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
 
         function filterCategory(cat, btn) {
             window.currentCategory = cat;
