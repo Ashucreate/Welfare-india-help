@@ -18,13 +18,13 @@ export default async function handler(req, res) {
 
     if (error) throw error;
 
-        // Direct standard keys return karo jo frontend direct use karega
-    const formattedJobs = (jobs || []).map(item => ({
-      category: item.category || item.c || 'current',
-      date: item.date || (item.created_at ? new Date(item.created_at).toLocaleDateString() : 'Today'),
-      title: item.title || item.t || 'Govt Recruitment',
-      link: item.link || item.apply_link || item.u || '#'
+            const formattedJobs = (jobs || []).map(item => ({
+      category: item.category || item.c || item.type || 'current',
+      date: item.date || item.created_at ? new Date(item.created_at).toLocaleDateString() : 'Today',
+      title: item.title || item.job_title || item.t || item.name || 'Govt Recruitment',
+      link: item.link || item.apply_link || item.url || item.u || '#'
     }));
+    
     
 
     return res.status(200).json({
