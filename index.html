@@ -36,15 +36,6 @@
             align-items: center;
             text-align: center;
         }
-        .top-banner {
-            font-size: 11px;
-            background: #1e3a8a;
-            color: #ffffff;
-            padding: 4px 12px;
-            border-radius: 12px;
-            margin-bottom: 8px;
-            font-weight: bold;
-        }
         .logo-area h1 {
             margin: 0;
             font-size: 28px;
@@ -132,9 +123,6 @@
             font-weight: bold;
             border-left: 5px solid var(--sarkari-red);
             color: #fff;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
         table {
             width: 100%;
@@ -207,6 +195,8 @@
     <div class="main-container">
         <div class="section-box">
             <div class="section-header">
+                <span>📋 Live Database Active Recruitments</span>
+            </div>
             
             <table id="jobTable">
                 <thead>
@@ -235,7 +225,6 @@
 
         async function fetchSupabaseLiveJobs() {
             const tbody = document.getElementById('jobTableBody');
-            const statusIndicator = document.getElementById('dbStatus');
 
             try {
                 const response = await fetch('/api/jobs');
@@ -246,71 +235,20 @@
                     allPortalData = data.map(job => ({
                         category: job.category || 'current',
                         date: job.date || '08/11/2026',
-                        title: job.title || job.job_title,
+                        title: job.title || job.job_title || 'Govt Recruitment',
                         link: job.link || job.apply_link || '#'
                     }));
                     renderTable(allPortalData);
-                    statusIndicator.innerText = '● Live Synced (API)';
-                    statusIndicator.style.color = '#86efac';
                 } else {
                     tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: #dc2626; padding: 20px;">No active records found.</td></tr>`;
-                    statusIndicator.innerText = '● No Active Records';
                 }
             } catch (err) {
                 console.error("API fetch error:", err);
-                statusIndicator.innerText = '● Connection Error';
-                statusIndicator.style.color = '#fca5a5';
                 tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: #dc2626; padding: 20px;">Error connecting to API.</td></tr>`;
             }
         }
 
         function renderTable(data) {
-            const tbody = document.getElementById('jobTableBody');
-            tbody.innerHTML = '';
-            if(data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: #64748b; padding: 20px;">No matching records found.</td></tr>`;
-                return;
-            }
-            data.forEach(job => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td><strong>${job.date}</strong></td>
-                    <td>${job.title}</td>
-                    <td style="text-align: center;"><a href="${job.link}" target="_blank" class="action-btn">Apply / View</a></td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function filterCategory(cat, btn) {
-            window.currentCategory = cat;
-            document.querySelectorAll('.nav-tabs button').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-
-            if(cat === 'all') {
-                renderTable(allPortalData);
-            } else {
-                let filtered = allPortalData.filter(item => item.category === cat);
-                renderTable(filtered);
-            }
-        }
-
-        function searchJobs() {
-            let query = document.getElementById('searchInput').value.toLowerCase();
-            let baseData = window.currentCategory === 'all' 
-                ? allPortalData 
-                : allPortalData.filter(item => item.category === window.currentCategory);
-            
-            let filtered = baseData.filter(job => job.title.toLowerCase().includes(query));
-            renderTable(filtered);
-        }
-
-        // Initialize on load
-        window.onload = function() {
-            fetchSupabaseLiveJobs();
-        };
-    </script>
-                        function renderTable(data) {
             const tbody = document.getElementById('jobTableBody');
             tbody.innerHTML = '';
             if(data.length === 0) {
@@ -368,5 +306,33 @@
             const modal = document.getElementById('jobDetailModal');
             if(modal) modal.style.display = 'none';
         }
+
+        function filterCategory(cat, btn) {
+            window.currentCategory = cat;
+            document.querySelectorAll('.nav-tabs button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            if(cat === 'all') {
+                renderTable(allPortalData);
+            } else {
+                let filtered = allPortalData.filter(item => item.category === cat);
+                renderTable(filtered);
+            }
+        }
+
+        function searchJobs() {
+            let query = document.getElementById('searchInput').value.toLowerCase();
+            let baseData = window.currentCategory === 'all' 
+                ? allPortalData 
+                : allPortalData.filter(item => item.category === window.currentCategory);
+            
+            let filtered = baseData.filter(job => job.title.toLowerCase().includes(query));
+            renderTable(filtered);
+        }
+
+        window.onload = function() {
+            fetchSupabaseLiveJobs();
+        };
+    </script>
 </body>
 </html>
